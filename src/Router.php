@@ -18,15 +18,15 @@ class Router
         $this->app = $app;
     }
 
-    public function api($route, $controllerName)
+    public function api($route, $controllerName, array $middleware = [])
     {
         # ToDo: validate controller instance
 
-        $this->app->get("/$route", ["uses" => "$controllerName@readList" , 'middleware' => ['auth.admin']]);
-        $this->app->post("/$route", ["uses" => "$controllerName@create", 'middleware' => ['auth.admin']]);
-        $this->app->get("/$route/{id}", ["uses" => "$controllerName@read", 'middleware' => ['auth.admin']]);
-        $this->app->put("/$route/{id}", ["uses" => "$controllerName@update", 'middleware' => ['auth.admin']]);
-        $this->app->post("/$route/{id}/clone", ["uses" => "$controllerName@copy", 'middleware' => ['auth.admin']]);
-        $this->app->delete("/$route/{id}", ["uses" => "$controllerName@delete", 'middleware' => ['auth.admin']]);
+        $this->app->get("/$route", ["uses" => "$controllerName@readList" , 'middleware' => $middleware]);
+        $this->app->post("/$route", ["uses" => "$controllerName@create", 'middleware' => $middleware]);
+        $this->app->get("/$route/{id}", ["uses" => "$controllerName@read", 'middleware' => $middleware]);
+        $this->app->put("/$route/{id}", ["uses" => "$controllerName@update", 'middleware' => $middleware]);
+        $this->app->post("/$route/{id}/clone", ["uses" => "$controllerName@copy", 'middleware' => $middleware]);
+        $this->app->delete("/$route/{id}", ["uses" => "$controllerName@delete", 'middleware' => $middleware]);
     }
 }

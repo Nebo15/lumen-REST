@@ -24,8 +24,11 @@ trait ListableTrait
             if (!is_array($this->listable)) {
                 throw new TraitException("Property \$listable shoul be an array in " . get_class($this));
             }
-
-            return $this->listable;
+            $array = [];
+            foreach ($this->listable as $field) {
+                $array[$field] = $this->$field;
+            }
+            return $array;
         } else {
             return $this->toArray();
         }

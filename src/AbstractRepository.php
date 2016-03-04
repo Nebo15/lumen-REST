@@ -64,8 +64,9 @@ abstract class AbstractRepository
 
     public function copy($id)
     {
-        $values = $this->read($id)->getAttributes();
-        unset($values[call_user_func([$this->modelClassName, 'getKeyName'])]);
+        $model = $this->read($id);
+        $values = $model->getAttributes();
+        unset($values[$model->getKeyName()]);
 
         return $this->createOrUpdate($values);
     }
