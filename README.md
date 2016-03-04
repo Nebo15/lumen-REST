@@ -1,1 +1,1 @@
-# lumen-REST
+# Lumen REST API components

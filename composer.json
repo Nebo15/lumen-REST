@@ -1,0 +1,21 @@
+{
+  "name": "nebo15/lumen.REST",
+  "description": "Components for fast building REST API for Lumen",
+  "keywords": ["lumen", "REST", "API"],
+  "authors": [
+    {
+      "name": "Paul Bardack",
+      "homepage": "http://paulbardack.com"
+    }
+  ],
+  "license" : "MIT",
+  "require-dev": {
+    "laravel/lumen-framework": "5.2.*",
+    "squizlabs/php_codesniffer": "2.*"
+  },
+  "autoload": {
+    "psr-4": { "REST\\": "src" }
+  },
+  "version": "0.0.1",
+  "minimum-stability": "dev"
+}
