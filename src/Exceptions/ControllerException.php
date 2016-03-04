@@ -5,7 +5,7 @@
  * Time: 11:35
  */
 
-namespace REST\Exceptions;
+namespace Nebo15\REST\Exceptions;
 
 class ControllerException extends \Exception
 {

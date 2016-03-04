@@ -5,7 +5,7 @@
  * Time: 11:13
  */
 
-namespace REST;
+namespace Nebo15\REST;
 
 use Illuminate\Http\Response as LumenResponse;
 use Illuminate\Pagination\LengthAwarePaginator;

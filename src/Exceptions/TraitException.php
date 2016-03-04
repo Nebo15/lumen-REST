@@ -5,7 +5,7 @@
  * Time: 11:36
  */
 
-namespace REST\Exceptions;
+namespace Nebo15\REST\Exceptions;
 
 class TraitException extends \Exception
 {

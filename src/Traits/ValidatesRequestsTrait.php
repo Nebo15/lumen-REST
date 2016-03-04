@@ -5,7 +5,7 @@
  * Time: 11:31
  */
 
-namespace REST\Traits;
+namespace Nebo15\REST\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Validation\ValidationException;

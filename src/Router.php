@@ -5,7 +5,7 @@
  * Time: 11:11
  */
 
-namespace REST;
+namespace Nebo15\REST;
 
 use Laravel\Lumen\Application;
 
@@ -22,11 +22,11 @@ class Router
     {
         # ToDo: validate controller instance
 
-        $this->app->get("/$route", ["uses" => "$controllerName@readList"]);
-        $this->app->post("/$route", ["uses" => "$controllerName@create"]);
-        $this->app->get("/$route/{id}", ["uses" => "$controllerName@read"]);
-        $this->app->put("/$route/{id}", ["uses" => "$controllerName@update"]);
-        $this->app->post("/$route/{id}/clone", ["uses" => "$controllerName@copy"]);
-        $this->app->delete("/$route/{id}", ["uses" => "$controllerName@delete"]);
+        $this->app->get("/$route", ["uses" => "$controllerName@readList" , 'middleware' => ['auth.admin']]);
+        $this->app->post("/$route", ["uses" => "$controllerName@create", 'middleware' => ['auth.admin']]);
+        $this->app->get("/$route/{id}", ["uses" => "$controllerName@read", 'middleware' => ['auth.admin']]);
+        $this->app->put("/$route/{id}", ["uses" => "$controllerName@update", 'middleware' => ['auth.admin']]);
+        $this->app->post("/$route/{id}/clone", ["uses" => "$controllerName@copy", 'middleware' => ['auth.admin']]);
+        $this->app->delete("/$route/{id}", ["uses" => "$controllerName@delete", 'middleware' => ['auth.admin']]);
     }
 }

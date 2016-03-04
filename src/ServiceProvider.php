@@ -5,7 +5,7 @@
  * Time: 11:10
  */
 
-namespace REST;
+namespace Nebo15\REST;
 
 use Illuminate\Support\ServiceProvider as LumenServiceProvider;
 
@@ -13,8 +13,12 @@ class ServiceProvider extends LumenServiceProvider
 {
     public function register()
     {
-        $this->app->singleton('REST.router', function ($app) {
+        $this->app->singleton('Nebo15\REST\Router', function ($app) {
             return new Router($app);
         });
+
+        $this->commands([
+            'Nebo15\REST\Console\Command\CreateCRUD',
+        ]);
     }
 }

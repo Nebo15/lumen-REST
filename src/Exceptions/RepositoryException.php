@@ -5,7 +5,7 @@
  * Time: 11:34
  */
 
-namespace REST\Exceptions;
+namespace Nebo15\REST\Exceptions;
 
 class RepositoryException extends \Exception
 {

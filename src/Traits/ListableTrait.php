@@ -5,12 +5,12 @@
  * Time: 11:32
  */
 
-namespace REST\Traits;
+namespace Nebo15\REST\Traits;
 
-use REST\Exceptions\TraitException;
+use Nebo15\REST\Exceptions\TraitException;
 
 /**
- * Class RESTListable
+ * Class Nebo15\RESTListable
  * @package App\Http\Traits
  * @property array $listable
  */

@@ -14,7 +14,7 @@
     "squizlabs/php_codesniffer": "2.*"
   },
   "autoload": {
-    "psr-4": { "REST\\": "src" }
+    "psr-4": { "Nebo15\\REST\\": "src" }
   },
   "version": "0.0.1",
   "minimum-stability": "dev"

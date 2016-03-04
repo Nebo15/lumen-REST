@@ -5,10 +5,10 @@
  * Time: 11:14
  */
 
-namespace REST;
+namespace Nebo15\REST;
 
 use Illuminate\Database\Eloquent\Model;
-use REST\Exceptions\RepositoryException;
+use Nebo15\REST\Exceptions\RepositoryException;
 
 abstract class AbstractRepository
 {
@@ -28,6 +28,11 @@ abstract class AbstractRepository
                 "Model $this->modelClassName should be instance of Illuminate\\Database\\Eloquent\\Model"
             );
         }
+    }
+
+    public function getModel()
+    {
+        return $this->model;
     }
 
     /**

@@ -5,20 +5,22 @@
  * Time: 13:37
  */
 
-namespace REST;
+namespace Nebo15\REST;
 
 use Illuminate\Http\Request;
-use REST\Exceptions\ControllerException;
-use REST\Interfaces\ListableInterface;
-use REST\Traits\ValidatesRequestsTrait;
+use Nebo15\REST\Exceptions\ControllerException;
+use Nebo15\REST\Interfaces\ListableInterface;
+use Nebo15\REST\Traits\ValidatesRequestsTrait;
 
 abstract class AbstractController extends \Laravel\Lumen\Routing\Controller
 {
     use ValidatesRequestsTrait;
 
-    private $request;
-    private $response;
     private $repository;
+
+    protected $request;
+
+    protected $response;
 
     protected $repositoryClassName;
 
@@ -38,7 +40,7 @@ abstract class AbstractController extends \Laravel\Lumen\Routing\Controller
             }
             $this->repository = new $this->repositoryClassName;
             if (!($this->repository instanceof AbstractRepository)) {
-                throw new ControllerException("Repository $this->repositoryClassName should be instance of REST\\Repository");
+                throw new ControllerException("Repository $this->repositoryClassName should be instance of Nebo15\REST\\Repository");
             }
         }
 
@@ -67,10 +69,10 @@ abstract class AbstractController extends \Laravel\Lumen\Routing\Controller
         return $this->response->json($this->getRepository()->read($id)->toArray());
     }
 
-    public function readList(Request $request)
+    public function readList()
     {
         return $this->response->jsonPaginator(
-            $this->getRepository()->readList($request->input('size')),
+            $this->getRepository()->readList($this->request->input('size')),
             [],
             function (ListableInterface $model) {
                 return $model->toListArray();
@@ -78,12 +80,12 @@ abstract class AbstractController extends \Laravel\Lumen\Routing\Controller
         );
     }
 
-    public function update(Request $request, $id)
+    public function update($id)
     {
         $this->validateRoute();
 
         return $this->response->json(
-            $this->getRepository()->createOrUpdate($request->request->all(), $id)->toArray()
+            $this->getRepository()->createOrUpdate($this->request->request->all(), $id)->toArray()
         );
     }
 

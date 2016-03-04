@@ -5,7 +5,7 @@
  * Time: 11:09
  */
 
-namespace REST\Interfaces;
+namespace Nebo15\REST\Interfaces;
 
 interface ListableInterface
 {
