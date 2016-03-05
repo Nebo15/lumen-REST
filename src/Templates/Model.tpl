@@ -12,9 +12,9 @@ class {modelName} extends Base implements ListableInterface
 {
     use ListableTrait;
 
-    protected $fillable = [];
+    protected $fillable = [{fillable}];
 
-    protected $listable = [];
+    protected $listable = [{listable}];
 
-    protected $visible = [];
+    protected $visible = [{visible}];
 }

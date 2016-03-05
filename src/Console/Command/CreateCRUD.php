@@ -12,21 +12,34 @@ use Illuminate\Console\Command;
 
 class CreateCRUD extends Command
 {
-    protected $signature = 'rest:create {model}';
+    protected $signature = 'rest:create {model} {--fillable=} {--listable=} {--visible=} {--force}';
 
     protected $description = 'Create API CRUD endpoints, Model, Repository and Tests';
 
     public function handle()
     {
         $modelName = ucfirst($this->argument('model'));
+        $this->info("Start to generate REST API for $modelName");
 
+        $properties = [];
+        foreach (['fillable', 'listable', 'visible'] as $opt) {
+            if ($$opt = $this->option($opt)) {
+                $properties[$opt] = "'" . rtrim(implode("', '", array_map('trim', explode(',', $$opt)))) . "'";
+            } else {
+                $properties[$opt] = null;
+            }
+        }
+
+//        $this->generateTests($modelName);
+        $this->generateModel($modelName, $properties);
         $this->generateController($modelName);
         $this->generateRepository($modelName);
-        $this->generateModel($modelName);
+        $this->info('DONE');
     }
 
     private function generateController($model)
     {
+        $this->line('Generating Controller');
         $plural = Inflector::pluralize($model);
         $this->createFile("app/Http/Controllers/{$plural}Controller.php", $this->getTemplate('Controller', [
             '{namespace}' => 'App\Http\Controllers',
@@ -37,6 +50,7 @@ class CreateCRUD extends Command
 
     private function generateRepository($model)
     {
+        $this->line('Generating Repository');
         $plural = Inflector::pluralize($model);
         $this->createFile("app/Repositories/{$plural}Repository.php", $this->getTemplate('Repository', [
             '{namespace}' => 'App\Repositories',
@@ -45,12 +59,21 @@ class CreateCRUD extends Command
         ]));
     }
 
-    private function generateModel($model)
+    private function generateModel($model, array $properties)
     {
+        $this->line('Generating Model');
         $this->createFile("app/Models/{$model}.php", $this->getTemplate('Model', [
             '{namespace}' => 'App\Models',
             '{modelName}' => $model,
+            '{visible}' => $properties['visible'],
+            '{fillable}' => $properties['fillable'],
+            '{listable}' => $properties['listable'],
         ]));
+    }
+
+    private function generateTests($model)
+    {
+        $this->line('Generating Tests');
     }
 
     private function getTemplate($file, array $replaceVars = [])
@@ -67,12 +90,16 @@ class CreateCRUD extends Command
     {
         $parts = explode('/', $path);
         $file = array_pop($parts);
-        $dir = './';
+        $dir = '.';
         foreach ($parts as $part) {
             if (!is_dir($dir .= "/$part")) {
                 mkdir($dir);
             }
         }
-        file_put_contents("$dir/$file", $contents);
+        if (file_exists("$dir/$file") and !$this->option('force')) {
+            $this->warn("File already exists: $dir/$file. Use flag --force to rewrite it");
+        } else {
+            file_put_contents("$dir/$file", $contents);
+        }
     }
 }
