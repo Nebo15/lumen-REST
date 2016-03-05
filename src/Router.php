@@ -26,7 +26,7 @@ class Router
         $this->app->post("/$route", ["uses" => "$controllerName@create", 'middleware' => $middleware]);
         $this->app->get("/$route/{id}", ["uses" => "$controllerName@read", 'middleware' => $middleware]);
         $this->app->put("/$route/{id}", ["uses" => "$controllerName@update", 'middleware' => $middleware]);
-        $this->app->post("/$route/{id}/clone", ["uses" => "$controllerName@copy", 'middleware' => $middleware]);
+        $this->app->post("/$route/{id}/copy", ["uses" => "$controllerName@copy", 'middleware' => $middleware]);
         $this->app->delete("/$route/{id}", ["uses" => "$controllerName@delete", 'middleware' => $middleware]);
     }
 }
