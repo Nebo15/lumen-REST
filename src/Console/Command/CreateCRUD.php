@@ -34,6 +34,7 @@ class CreateCRUD extends Command
         $this->generateModel($modelName, $properties);
         $this->generateController($modelName);
         $this->generateRepository($modelName);
+        $this->generateObserver($modelName);
         $this->info('DONE');
     }
 
@@ -56,6 +57,19 @@ class CreateCRUD extends Command
             '{namespace}' => 'App\Repositories',
             '{repositoryName}' => $plural,
             '{modelClassName}' => "App\\Models\\$model",
+            '{observerClassName}' => "App\\Observers\\" . $this->getObserverNameFromModelName($model),
+        ]));
+    }
+
+    private function generateObserver($model)
+    {
+        $this->line('Generating Observer');
+        $observerName = $this->getObserverNameFromModelName($model);
+        $this->createFile("app/Observers/{$observerName}.php", $this->getTemplate('Observer', [
+            '{namespace}' => 'App\Observers',
+            '{observerName}' => $observerName,
+            '{modelName}' => strtolower($model),
+            '{modelNamespace}' => "\\App\\Models\\$model"
         ]));
     }
 
@@ -69,6 +83,11 @@ class CreateCRUD extends Command
             '{fillable}' => $properties['fillable'],
             '{listable}' => $properties['listable'],
         ]));
+    }
+
+    private function getObserverNameFromModelName($model)
+    {
+        return $model . "Observer";
     }
 
     private function generateTests($model)
