@@ -10,4 +10,5 @@ use Nebo15\REST\AbstractRepository;
 class {repositoryName}Repository extends AbstractRepository
 {
     protected $modelClassName = '{modelClassName}';
+    protected $observerClassName = '{observerClassName}';
 }
