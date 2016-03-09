@@ -24,18 +24,42 @@ class CreateCRUD extends Command
         $properties = [];
         foreach (['fillable', 'listable', 'visible'] as $opt) {
             if ($$opt = $this->option($opt)) {
-                $properties[$opt] = "'" . rtrim(implode("', '", array_map('trim', explode(',', $$opt)))) . "'";
+                $properties[$opt] = array_map('trim', explode(',', $$opt));
             } else {
                 $properties[$opt] = null;
             }
         }
 
-//        $this->generateTests($modelName);
         $this->generateModel($modelName, $properties);
         $this->generateController($modelName);
         $this->generateRepository($modelName);
         $this->generateObserver($modelName);
+        $this->generateDoc($modelName, $properties);
+//        $this->generateTests($modelName);
         $this->info('DONE');
+    }
+
+    private function generateDoc($model, $properties)
+    {
+        $visible = '';
+        $fillable = '';
+        $listable = '';
+        foreach ($properties as $key => $values) {
+            if ($values) {
+                foreach ($values as $item) {
+                    $$key .= " * `$item` - string\n";
+                }
+            }
+        }
+        $this->line("Generating .md documentation");
+        $this->createFile("$model.md", $this->getTemplate('Docs/API', [
+            '{modelName}' => $model,
+            '{routeName}' => strtolower($model),
+            '{routePrefix}' => 'api/v1/admin',
+            '{fieldsVisible}' => $visible,
+            '{fieldsFillable}' => $fillable,
+            '{fieldsListable}' => $listable,
+        ], 'md'));
     }
 
     private function generateController($model)
@@ -79,10 +103,15 @@ class CreateCRUD extends Command
         $this->createFile("app/Models/{$model}.php", $this->getTemplate('Model', [
             '{namespace}' => 'App\Models',
             '{modelName}' => $model,
-            '{visible}' => $properties['visible'],
-            '{fillable}' => $properties['fillable'],
-            '{listable}' => $properties['listable'],
+            '{visible}' => $this->prepareModelProp($properties['visible']),
+            '{fillable}' => $this->prepareModelProp($properties['fillable']),
+            '{listable}' => $this->prepareModelProp($properties['listable']),
         ]));
+    }
+
+    private function prepareModelProp($value)
+    {
+        return $value ? "'" . rtrim(implode("', '", $value)) . "'" : null;
     }
 
     private function getObserverNameFromModelName($model)
@@ -95,9 +124,9 @@ class CreateCRUD extends Command
         $this->line('Generating Tests');
     }
 
-    private function getTemplate($file, array $replaceVars = [])
+    private function getTemplate($file, array $replaceVars = [], $ext = 'tpl')
     {
-        $content = file_get_contents(__DIR__ . '/../../Templates/' . $file . '.tpl');
+        $content = file_get_contents(__DIR__ . '/../../Templates/' . $file . ".$ext");
         if ($replaceVars) {
             $content = str_replace(array_keys($replaceVars), $replaceVars, $content);
         }
