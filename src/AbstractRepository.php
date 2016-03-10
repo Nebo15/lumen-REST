@@ -13,6 +13,7 @@ use Nebo15\REST\Exceptions\RepositoryException;
 abstract class AbstractRepository
 {
     protected $modelClassName;
+    protected $observerClassName;
 
     /** @var Model $model */
     private $model;
@@ -22,11 +23,22 @@ abstract class AbstractRepository
         if (!$this->modelClassName) {
             throw new RepositoryException("You should set \$modelClassName in " . get_called_class());
         }
+        if (!class_exists($this->modelClassName)) {
+            throw new RepositoryException("Model " . $this->modelClassName ." not found");
+        }
         $this->model = new $this->modelClassName;
         if (!($this->model instanceof Model)) {
             throw new RepositoryException(
                 "Model $this->modelClassName should be instance of Illuminate\\Database\\Eloquent\\Model"
             );
+        }
+        $this->getObserver();
+    }
+
+    public function getObserver()
+    {
+        if ($this->observerClassName && class_exists($this->observerClassName)) {
+            $this->model->observe(new $this->observerClassName);
         }
     }
 
