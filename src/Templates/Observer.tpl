@@ -5,56 +5,37 @@
 
 namespace {namespace};
 
+use {modelNamespace};
+
 class {observerName}
 {
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function creating(${modelName})
+    public function creating({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function created(${modelName})
+
+    public function created({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function updating(${modelName})
+
+    public function updating({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function updated(${modelName})
+
+    public function updated({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function saving(${modelName})
+
+    public function saving({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function saved(${modelName})
+
+    public function saved({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function deleting(${modelName})
+
+    public function deleting({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function deleted(${modelName})
+
+    public function deleted({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function restoring(${modelName})
+
+    public function restoring({modelClassName} ${modelName})
     {}
-    /**
-     * @param {modelNamespace} ${modelName}
-     */
-    public function restored(${modelName})
+
+    public function restored({modelClassName} ${modelName})
     {}
 }

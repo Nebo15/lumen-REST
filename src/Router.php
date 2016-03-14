@@ -18,15 +18,30 @@ class Router
         $this->app = $app;
     }
 
-    public function api($route, $controllerName, array $middleware = [])
-    {
+    public function api(
+        $route,
+        $controllerName,
+        array $middleware = [],
+        $api_prefix = 'api/v1/admin',
+        $namespace = 'App\Http\Controllers'
+    ) {
         # ToDo: validate controller instance
 
-        $this->app->get("/$route", ["uses" => "$controllerName@readList" , 'middleware' => $middleware]);
-        $this->app->post("/$route", ["uses" => "$controllerName@create", 'middleware' => $middleware]);
-        $this->app->get("/$route/{id}", ["uses" => "$controllerName@read", 'middleware' => $middleware]);
-        $this->app->put("/$route/{id}", ["uses" => "$controllerName@update", 'middleware' => $middleware]);
-        $this->app->post("/$route/{id}/copy", ["uses" => "$controllerName@copy", 'middleware' => $middleware]);
-        $this->app->delete("/$route/{id}", ["uses" => "$controllerName@delete", 'middleware' => $middleware]);
+        $app = $this->app;
+        $app->group(
+            [
+                'prefix' => $api_prefix,
+                'namespace' => $namespace,
+                'middleware' => $middleware
+            ],
+            function () use ($app, $route, $controllerName) {
+                $app->get("/$route", ["uses" => "$controllerName@readList"]);
+                $app->post("/$route", ["uses" => "$controllerName@create"]);
+                $app->get("/$route/{id}", ["uses" => "$controllerName@read"]);
+                $app->put("/$route/{id}", ["uses" => "$controllerName@update"]);
+                $app->post("/$route/{id}/copy", ["uses" => "$controllerName@copy"]);
+                $app->delete("/$route/{id}", ["uses" => "$controllerName@delete"]);
+            }
+        );
     }
 }

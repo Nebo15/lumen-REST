@@ -92,6 +92,7 @@ class CreateCRUD extends Command
         $this->createFile("app/Observers/{$observerName}.php", $this->getTemplate('Observer', [
             '{namespace}' => 'App\Observers',
             '{observerName}' => $observerName,
+            '{modelClassName}' => $model,
             '{modelName}' => strtolower($model),
             '{modelNamespace}' => "\\App\\Models\\$model"
         ]));

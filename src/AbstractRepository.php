@@ -13,6 +13,7 @@ use Nebo15\REST\Exceptions\RepositoryException;
 abstract class AbstractRepository
 {
     protected $modelClassName;
+
     protected $observerClassName;
 
     /** @var Model $model */
@@ -24,7 +25,7 @@ abstract class AbstractRepository
             throw new RepositoryException("You should set \$modelClassName in " . get_called_class());
         }
         if (!class_exists($this->modelClassName)) {
-            throw new RepositoryException("Model " . $this->modelClassName ." not found");
+            throw new RepositoryException("Model " . $this->modelClassName . " not found");
         }
         $this->model = new $this->modelClassName;
         if (!($this->model instanceof Model)) {
