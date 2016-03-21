@@ -33,19 +33,22 @@ abstract class AbstractRepository
                 "Model $this->modelClassName should be instance of Illuminate\\Database\\Eloquent\\Model"
             );
         }
-        $this->getObserver();
-    }
-
-    public function getObserver()
-    {
-        if ($this->observerClassName && class_exists($this->observerClassName)) {
-            $this->model->observe(new $this->observerClassName);
-        }
+        $this->initObserver();
     }
 
     public function getModel()
     {
         return $this->model;
+    }
+
+    public function findByIds(array $ids)
+    {
+        array_walk($ids, function (&$item) {
+            if (!($item instanceof \MongoId)) {
+                $item = new \MongoId($item);
+            }
+        });
+        return $this->getModel()->query()->where($this->getModel()->getKeyName(), ['$in' => $ids])->get();
     }
 
     /**
@@ -54,7 +57,7 @@ abstract class AbstractRepository
      */
     public function read($id)
     {
-        return call_user_func_array([$this->modelClassName, 'findById'], [$id]);
+        return $this->getModel()->query()->where($this->getModel()->getKeyName(), $id)->firstOrFail();
     }
 
     /**
@@ -64,7 +67,7 @@ abstract class AbstractRepository
      */
     public function readList($size = null)
     {
-        return call_user_func_array([$this->modelClassName, 'paginate'], [intval($size)]);
+        return $this->getModel()->query()->paginate(intval($size));
     }
 
     public function createOrUpdate($values, $id = null)
@@ -87,5 +90,12 @@ abstract class AbstractRepository
     public function delete($id)
     {
         return $this->read($id)->delete();
+    }
+
+    protected function initObserver()
+    {
+        if ($this->observerClassName && class_exists($this->observerClassName)) {
+            $this->model->observe(new $this->observerClassName);
+        }
     }
 }

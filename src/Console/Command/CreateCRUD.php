@@ -12,7 +12,7 @@ use Illuminate\Console\Command;
 
 class CreateCRUD extends Command
 {
-    protected $signature = 'rest:create {model} {--fillable=} {--listable=} {--visible=} {--force}';
+    protected $signature = 'rest:create {model} {--fillable=} {--listable=} {--visible=} {--force} {--doc=json}';
 
     protected $description = 'Create API CRUD endpoints, Model, Repository and Tests';
 
@@ -34,13 +34,17 @@ class CreateCRUD extends Command
         $this->generateController($modelName);
         $this->generateRepository($modelName);
         $this->generateObserver($modelName);
-        $this->generateDoc($modelName, $properties);
+        $this->generateDoc($modelName, $properties, $this->option('doc'));
 //        $this->generateTests($modelName);
         $this->info('DONE');
     }
 
-    private function generateDoc($model, $properties)
+    private function generateDoc($model, $properties, $type = 'json')
     {
+        if(!in_array($type, ['md', 'json'])){
+            $this->warn("Unavailable documentation extension '$type'");
+            $type = 'json';
+        }
         $visible = '';
         $fillable = '';
         $listable = '';
@@ -59,7 +63,7 @@ class CreateCRUD extends Command
             '{fieldsVisible}' => $visible,
             '{fieldsFillable}' => $fillable,
             '{fieldsListable}' => $listable,
-        ], 'md'));
+        ], $type));
     }
 
     private function generateController($model)

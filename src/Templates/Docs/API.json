@@ -1,0 +1,226 @@
+{
+  "/admin/{routeName}": {
+    "get": {
+      "security": [
+        {
+          "basicAuth": []
+        }
+      ],
+      "summary": "{modelName} List",
+      "description": "Get list of {modelName}",
+      "tags": [
+        "{modelName}"
+      ],
+      "responses": {
+        "200": {
+          "description": "An array of {modelName}",
+          "schema": {
+            "type": "object",
+            "required": [
+              "meta",
+              "data"
+            ],
+            "properties": {
+              "meta": {
+                "$ref": "#/definitions/Meta",
+                "description": "Meta data"
+              },
+              "data": {
+                "type": "array",
+                "description": "Response data object",
+                "items": {
+                  "$ref": "#/definitions/GroupList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "security": [
+        {
+          "basicAuth": []
+        }
+      ],
+      "summary": "{modelName} Create",
+      "description": "Create a new {modelName}",
+      "tags": [
+        "{modelName}"
+      ],
+      "parameters": [
+        {
+          "name": "probability",
+          "in": "request",
+          "description": "probability type",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "random",
+            "percent"
+          ]
+        },
+        {
+          "name": "table",
+          "in": "body",
+          "description": "{modelName} object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "required": [
+              "_id",
+              "percent"
+            ],
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "ID of Table.",
+                "example": "Some title"
+              },
+              "percent": {
+                "type": "string",
+                "description": "Description of {modelName}.",
+                "example": "Some description"
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Created {modelName}",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/{modelName}"
+            }
+          }
+        }
+      }
+    }
+  },
+  "/admin/{routeName}/{id}": {
+    "get": {
+      "summary": "{modelName} Read",
+      "description": "Get {modelName} by id",
+      "tags": [
+        "{modelName}"
+      ],
+      "responses": {
+        "200": {
+          "description": "{modelName} object",
+          "schema": {
+            "type": "object",
+            "required": [
+              "meta",
+              "data"
+            ],
+            "properties": {
+              "meta": {
+                "$ref": "#/definitions/Meta",
+                "description": "Meta data"
+              },
+              "data": {
+                "$ref": "#/definitions/{modelName}",
+                "description": "Response data object"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation error",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "meta": {
+                "$ref": "#/definitions/Meta",
+                "description": "Meta data"
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "summary": "{modelName} Update",
+      "description": "Update {modelName} by id",
+      "tags": [
+        "{modelName}"
+      ],
+      "responses": {
+        "200": {
+          "description": "{modelName} object",
+          "schema": {
+            "type": "object",
+            "required": [
+              "meta",
+              "data"
+            ],
+            "properties": {
+              "meta": {
+                "$ref": "#/definitions/Meta",
+                "description": "Meta data"
+              },
+              "data": {
+                "$ref": "#/definitions/{modelName}",
+                "description": "Response data object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "delete": {
+      "summary": "{modelName} Delete",
+      "description": "Delete {modelName} by id",
+      "tags": [
+        "{modelName}"
+      ],
+      "responses": {
+        "200": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "meta"
+            ],
+            "properties": {
+              "meta": {
+                "$ref": "#/definitions/Meta",
+                "description": "Meta data"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/admin/{routeName}/{id}/copy": {
+    "post": {
+      "summary": "{modelName} Copy",
+      "description": "Create new {modelName} from existing {modelName} by id",
+      "tags": [
+        "{modelName}"
+      ],
+      "responses": {
+        "200": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "meta"
+            ],
+            "properties": {
+              "meta": {
+                "$ref": "#/definitions/Meta",
+                "description": "Meta data"
+              },
+              "data": {
+                "$ref": "#/definitions/{modelName}",
+                "description": "Response data object"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
