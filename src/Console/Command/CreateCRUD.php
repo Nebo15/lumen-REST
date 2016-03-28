@@ -9,6 +9,7 @@ namespace Nebo15\REST\Console\Command;
 
 use Doctrine\Common\Inflector\Inflector;
 use Illuminate\Console\Command;
+use Nebo15\REST\Exceptions\DocException;
 
 class CreateCRUD extends Command
 {
@@ -30,40 +31,116 @@ class CreateCRUD extends Command
             }
         }
 
-        $this->generateModel($modelName, $properties);
-        $this->generateController($modelName);
-        $this->generateRepository($modelName);
-        $this->generateObserver($modelName);
+//        $this->generateModel($modelName, $properties);
+//        $this->generateController($modelName);
+//        $this->generateRepository($modelName);
+//        $this->generateObserver($modelName);
         $this->generateDoc($modelName, $properties, $this->option('doc'));
-//        $this->generateTests($modelName);
         $this->info('DONE');
     }
 
     private function generateDoc($model, $properties, $type = 'json')
     {
-        if(!in_array($type, ['md', 'json'])){
+        if (!in_array($type, ['md', 'json'])) {
             $this->warn("Unavailable documentation extension '$type'");
             $type = 'json';
         }
-        $visible = '';
-        $fillable = '';
-        $listable = '';
-        foreach ($properties as $key => $values) {
-            if ($values) {
-                foreach ($values as $item) {
-                    $$key .= " * `$item` - string\n";
+
+        switch ($type) {
+            case 'json':
+                $vars = $this->prepareSwaggerVariables($model, $properties);
+                break;
+            case 'md':
+                $visible = '';
+                $fillable = '';
+                $listable = '';
+                foreach ($properties as $key => $values) {
+                    if ($values) {
+                        foreach ($values as $item) {
+                            $$key .= " * `$item` - string\n";
+                        }
+                    }
+                }
+                $vars = [
+                    '{modelName}' => $model,
+                    '{routeName}' => strtolower($model),
+                    '{routePrefix}' => 'api/v1/admin',
+                    '{fieldsVisible}' => $visible,
+                    '{fieldsFillable}' => $fillable,
+                    '{fieldsListable}' => $listable,
+                ];
+                break;
+            default:
+                throw new DocException("Undefined Documentation type '$type'");
+        }
+
+        $this->line("Generating .md documentation");
+        $this->createFile("$model.$type", $this->getTemplate('Docs/API', $vars, $type));
+    }
+
+    private function prepareSwaggerVariables($model, $props)
+    {
+        $visibleRequired = '"_id"';
+        $visibleProperties = '"_id": {
+          "type": "string",
+          "description": "Unique identifier representing a specific ' . $model . '. MongoID",
+          "example": "56c31536a60ad644060041af"
+        }';
+        $listableRequired = $visibleRequired;
+        $listableProperties = $visibleProperties;
+
+
+        foreach (['visible', 'listable'] as $type) {
+            if (!empty($props[$type])) {
+                $requiredName = $type . 'Required';
+                $propertiesName = $type . 'Properties';
+                foreach ($props[$type] as $item) {
+                    if ($item == '_id') {
+                        continue;
+                    }
+                    $$requiredName .= ",\n        \"$item\"";
+                    $$propertiesName .= <<<JSON
+,
+        "$item": {
+          "type": "string",
+          "description": "$model.$item value",
+          "example": "Some $item"
+        }
+JSON;
                 }
             }
         }
-        $this->line("Generating .md documentation");
-        $this->createFile("$model.md", $this->getTemplate('Docs/API', [
+
+        $fillableRequired = '';
+        $fillableProperties = '';
+        if (!empty($props['fillable'])) {
+            foreach ($props['fillable'] as $item) {
+                $fillableRequired .= $fillableRequired ? ",\n                \"$item\"" : "\"$item\"";
+                if($fillableProperties){
+                    $fillableProperties .= ",\n                ";
+                }
+                $fillableProperties .= <<<JSON
+"$item": {
+                  "type": "string",
+                  "description": "$model.$item value",
+                  "example": "Some $item"
+                }
+JSON;
+            }
+        }
+
+        return [
+            '{route}' => strtolower($model),
             '{modelName}' => $model,
-            '{routeName}' => strtolower($model),
-            '{routePrefix}' => 'api/v1/admin',
-            '{fieldsVisible}' => $visible,
-            '{fieldsFillable}' => $fillable,
-            '{fieldsListable}' => $listable,
-        ], $type));
+            '{modelNamePlural}' => Inflector::pluralize($model),
+            '{basePath}' => 'api/v1',
+            '{required}' => $visibleRequired,
+            '{properties}' => $visibleProperties,
+            '{requiredPost}' => $fillableRequired,
+            '{propertiesPost}' => $fillableProperties,
+            '{requiredList}' => $listableRequired,
+            '{propertiesList}' => $listableProperties,
+        ];
     }
 
     private function generateController($model)
@@ -122,11 +199,6 @@ class CreateCRUD extends Command
     private function getObserverNameFromModelName($model)
     {
         return $model . "Observer";
-    }
-
-    private function generateTests($model)
-    {
-        $this->line('Generating Tests');
     }
 
     private function getTemplate($file, array $replaceVars = [], $ext = 'tpl')
