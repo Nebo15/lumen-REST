@@ -75,7 +75,7 @@ class CreateCRUD extends Command
         }
 
         $this->line("Generating .md documentation");
-        $this->createFile("$model.$type", $this->getTemplate('Docs/API', $vars, $type));
+        $this->createFile("$model.$type", $this->getTemplate("Docs/API.$type", $vars));
     }
 
     private function prepareSwaggerVariables($model, $props)

@@ -96,17 +96,13 @@
             "schema": {
               "type": "object",
               "required": [
-                {
-                  requiredPost
-                }
+                {requiredPost}
               ],
               "properties": {
-          {
-            propertiesPost
+                {propertiesPost}
+              }
+            }
           }
-        }
-        }
-        }
         ],
         "responses": {
           "200": {
@@ -295,27 +291,21 @@
       "type": "object",
       "description": "",
       "required": [
-        {
-          requiredList
-        }
+        {requiredList}
       ],
       "properties": {
-{
-  propertiesList
-}
-}
-},
-"{modelName}": {
-"type": "object",
-"description": "",
-"required": [
-{required}
-],
-"properties": {
-{
-properties
-}
-}
-}
-}
+        {propertiesList}
+      }
+    },
+    "{modelName}": {
+      "type": "object",
+      "description": "",
+      "required": [
+        {required}
+      ],
+      "properties": {
+        {properties}
+      }
+    }
+  }
 }
