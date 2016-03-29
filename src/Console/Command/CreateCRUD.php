@@ -31,10 +31,10 @@ class CreateCRUD extends Command
             }
         }
 
-//        $this->generateModel($modelName, $properties);
-//        $this->generateController($modelName);
-//        $this->generateRepository($modelName);
-//        $this->generateObserver($modelName);
+        $this->generateModel($modelName, $properties);
+        $this->generateController($modelName);
+        $this->generateRepository($modelName);
+        $this->generateObserver($modelName);
         $this->generateDoc($modelName, $properties, $this->option('doc'));
         $this->info('DONE');
     }
