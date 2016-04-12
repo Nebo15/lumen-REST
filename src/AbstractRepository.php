@@ -14,8 +14,6 @@ abstract class AbstractRepository
 {
     protected $modelClassName;
 
-    protected $observerClassName;
-
     /** @var Model $model */
     private $model;
 
@@ -33,7 +31,6 @@ abstract class AbstractRepository
                 "Model $this->modelClassName should be instance of Illuminate\\Database\\Eloquent\\Model"
             );
         }
-        $this->initObserver();
     }
 
     public function getModel()
@@ -90,12 +87,5 @@ abstract class AbstractRepository
     public function delete($id)
     {
         return $this->read($id)->delete();
-    }
-
-    protected function initObserver()
-    {
-        if ($this->observerClassName && class_exists($this->observerClassName)) {
-            $this->model->observe(new $this->observerClassName);
-        }
     }
 }

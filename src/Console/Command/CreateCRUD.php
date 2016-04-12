@@ -162,7 +162,6 @@ JSON;
             '{namespace}' => 'App\Repositories',
             '{repositoryName}' => $plural,
             '{modelClassName}' => "App\\Models\\$model",
-            '{observerClassName}' => "App\\Observers\\" . $this->getObserverNameFromModelName($model),
         ]));
     }
 
