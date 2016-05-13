@@ -9,6 +9,8 @@ namespace Nebo15\REST;
 
 use Illuminate\Database\Eloquent\Model;
 use Nebo15\REST\Exceptions\RepositoryException;
+use Nebo15\LumenApplicationable\ApplicationableHelper;
+use Nebo15\LumenApplicationable\Contracts\Applicationable;
 
 abstract class AbstractRepository
 {
@@ -45,7 +47,14 @@ abstract class AbstractRepository
                 $item = new \MongoId($item);
             }
         });
-        return $this->getModel()->query()->where($this->getModel()->getKeyName(), ['$in' => $ids])->get();
+
+        $model = $this->getModel();
+        $query = $model->query();
+        if ($model instanceof Applicationable) {
+            $query = $query->where(['applications' => ['$in' => [ApplicationableHelper::getApplicationId()]]]);
+        }
+
+        return $query->where($this->getModel()->getKeyName(), ['$in' => $ids])->get();
     }
 
     /**
@@ -54,7 +63,12 @@ abstract class AbstractRepository
      */
     public function read($id)
     {
-        return $this->getModel()->query()->where($this->getModel()->getKeyName(), $id)->firstOrFail();
+        $model = $this->getModel();
+        $query = $model->query();
+        if ($model instanceof Applicationable) {
+            $query = $query->where(['applications' => ['$in' => [ApplicationableHelper::getApplicationId()]]]);
+        }
+        return $query->where($this->getModel()->getKeyName(), $id)->firstOrFail();
     }
 
     /**
@@ -64,7 +78,13 @@ abstract class AbstractRepository
      */
     public function readList($size = null)
     {
-        return $this->getModel()->query()->paginate(intval($size));
+        $model = $this->getModel();
+        $query = $model->query();
+        if ($model instanceof Applicationable) {
+            $query = $query->where(['applications' => ['$in' => [ApplicationableHelper::getApplicationId()]]]);
+        }
+
+        return $query->paginate(intval($size));
     }
 
     public function createOrUpdate($values, $id = null)
