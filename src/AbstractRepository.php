@@ -90,6 +90,9 @@ abstract class AbstractRepository
     public function createOrUpdate($values, $id = null)
     {
         $model = $id ? $this->read($id) : $this->model->newInstance();
+        if ($model instanceof Applicationable) {
+            ApplicationableHelper::addApplication($model);
+        }
         $model->fill($values)->save();
 
         return $model;
