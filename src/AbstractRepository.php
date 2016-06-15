@@ -7,6 +7,7 @@
 
 namespace Nebo15\REST;
 
+use \MongoDB\BSON\ObjectID;
 use Illuminate\Database\Eloquent\Model;
 use Nebo15\REST\Exceptions\RepositoryException;
 use Nebo15\LumenApplicationable\ApplicationableHelper;
@@ -43,8 +44,8 @@ abstract class AbstractRepository
     public function findByIds(array $ids)
     {
         array_walk($ids, function (&$item) {
-            if (!($item instanceof \MongoDB\BSON\ObjectId)) {
-                $item = new \MongoDB\BSON\ObjectId($item);
+            if (!($item instanceof ObjectID)) {
+                $item = new ObjectId($item);
             }
         });
 
