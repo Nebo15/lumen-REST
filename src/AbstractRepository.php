@@ -43,8 +43,8 @@ abstract class AbstractRepository
     public function findByIds(array $ids)
     {
         array_walk($ids, function (&$item) {
-            if (!($item instanceof \MongoId)) {
-                $item = new \MongoId($item);
+            if (!($item instanceof \MongoDB\BSON\ObjectId)) {
+                $item = new \MongoDB\BSON\ObjectId($item);
             }
         });
 
