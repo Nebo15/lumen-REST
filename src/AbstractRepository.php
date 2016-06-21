@@ -8,7 +8,10 @@
 namespace Nebo15\REST;
 
 use \MongoDB\BSON\ObjectID;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Nebo15\REST\Exceptions\RepositoryException;
 use Nebo15\LumenApplicationable\ApplicationableHelper;
 use Nebo15\LumenApplicationable\Contracts\Applicationable;
@@ -111,5 +114,19 @@ abstract class AbstractRepository
     public function delete($id)
     {
         return $this->read($id)->delete();
+    }
+
+    public function paginateQuery(Builder $query, $size)
+    {
+        $total = $query->toBase()->getCountForPagination();
+
+        $page = Paginator::resolveCurrentPage('page');
+        $perPage = intval($size) ?: $this->getModel()->getPerPage();
+        $items = $query->skip($page * $perPage - $perPage)->take($perPage)->get();
+
+        return new LengthAwarePaginator($items, $total, $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]);
     }
 }
